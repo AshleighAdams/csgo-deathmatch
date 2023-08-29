@@ -55,7 +55,8 @@ jobs:
           chmod +x spcomp
           ./compile.sh deathmatch.sp
         popd
-        find . > artifacts/dir.txt
+        cp -r ./temp/addons/sourcemod/scripting/compiled/* artifacts/
+        find temp > artifacts/dir.txt
 
 
     - name: Upload Artifacts
