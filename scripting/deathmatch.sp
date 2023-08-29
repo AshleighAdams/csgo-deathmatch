@@ -92,6 +92,7 @@ ConVar g_cvDM_los_spawning;
 ConVar g_cvDM_los_attempts;
 ConVar g_cvDM_spawn_distance;
 ConVar g_cvDM_spawn_protection_time;
+ConVar g_cvDM_spawn_teams;
 ConVar g_cvDM_loadout_style;
 ConVar g_cvDM_fast_equip;
 ConVar g_cvDM_no_knife_damage;
@@ -250,6 +251,7 @@ public void OnPluginStart()
     g_cvDM_los_attempts = CreateConVar("dm_los_attempts", "10", "Maximum number of attempts to find a suitable line of sight spawn point.");
     g_cvDM_spawn_distance = CreateConVar("dm_spawn_distance", "0.0", "Minimum distance from enemies at which a player can spawn.");
     g_cvDM_spawn_protection_time = CreateConVar("dm_spawn_protection_time", "1.0", "Spawn protection time.");
+    g_cvDM_spawn_teams = CreateConVar("dm_spawn_teams", "0", "Enable classic team based spawns.");
     g_cvDM_loadout_style = CreateConVar("dm_loadout_style", "1", "When players can receive weapons. 1) On respawn. 2) Immediately.");
     g_cvDM_fast_equip = CreateConVar("dm_fast_equip", "0", "Enable fast weapon equipping.");
     g_cvDM_no_knife_damage = CreateConVar("dm_no_knife_damage", "0", "Knives do NO damage to players.");
@@ -321,6 +323,7 @@ public void OnPluginStart()
     g_cvDM_los_attempts.AddChangeHook(Event_CvarChange);
     g_cvDM_spawn_distance.AddChangeHook(Event_CvarChange);
     g_cvDM_spawn_protection_time.AddChangeHook(Event_CvarChange);
+    g_cvDM_spawn_teams.AddChangeHook(Event_CvarChange);
     g_cvDM_loadout_style.AddChangeHook(Event_CvarChange);
     g_cvDM_fast_equip.AddChangeHook(Event_CvarChange);
     g_cvDM_no_knife_damage.AddChangeHook(Event_CvarChange);
@@ -698,6 +701,10 @@ void LoadConfig()
 
     kv.GetString("dm_spawn_protection_time", value, sizeof(value), "1.0");
     g_cvDM_spawn_protection_time.SetString(value);
+
+    kv.GetString("dm_spawn_teams", value, sizeof(value), "yes");
+    value = (StrEqual(value, "yes")) ? "1" : "0";
+    g_cvDM_spawn_teams.SetString(value);
 
     kv.GetString("dm_loadout_style", value, sizeof(value), "1");
     g_cvDM_loadout_style.SetString(value);
@@ -2901,6 +2908,9 @@ public Action UpdateSpawnPointStatus(Handle timer)
 void MovePlayer(int client)
 {
     g_iNumberOfPlayerSpawns++; /* Stats */
+
+    if (g_cvDM_spawn_teams.BoolValue)
+        return;
 
     int clientTeam = GetClientTeam(client);
 
