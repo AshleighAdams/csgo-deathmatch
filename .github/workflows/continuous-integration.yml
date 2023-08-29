@@ -47,7 +47,7 @@ jobs:
       run: |
         mkdir temp
         mkdir artifacts
-        SMVERSION=1.11
+        SMVERSION=1.10
         wget "http://www.sourcemod.net/latest.php?version=$SMVERSION&os=linux" -O temp/sourcemod-$SMVERSION-linux.tar.gz
         tar -xzf temp/sourcemod-$SMVERSION-linux.tar.gz -C temp/
         cp -r scripting/* temp/addons/sourcemod/scripting/
