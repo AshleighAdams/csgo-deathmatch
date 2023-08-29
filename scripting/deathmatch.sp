@@ -2910,7 +2910,10 @@ void MovePlayer(int client)
     g_iNumberOfPlayerSpawns++; /* Stats */
 
     if (g_cvDM_spawn_teams.BoolValue)
+    {
+        g_bPlayerMoved[client] = true;
         return;
+    }
 
     int clientTeam = GetClientTeam(client);
 
