@@ -1,0 +1,66 @@
+name: Continious Integration
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - support/*
+    paths-ignore:
+    - docs/**
+    - README.md
+    - .editorconfig
+    - .gitattributes
+    - .gitignore
+    - .github/ISSUE_TEMPLATE/**
+    - .github/pull_request_template.md
+  pull_request:
+    branches:
+      - master
+      - support/*
+    paths-ignore:
+    - docs/**
+    - README.md
+    - .editorconfig
+    - .gitattributes
+    - .gitignore
+    - .github/ISSUE_TEMPLATE/**
+    - .github/pull_request_template.md
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '1'
+        submodules: recursive
+
+    - name: Build
+      run: |
+        mkdir temp
+        mkdir artifacts
+        SMVERSION=1.11
+        wget "http://www.sourcemod.net/latest.php?version=$SMVERSION&os=linux" -O temp/sourcemod-$SMVERSION-linux.tar.gz
+        tar -xzf temp/sourcemod-$SMVERSION-linux.tar.gz -C temp/
+        cp -r scripting/* temp/addons/sourcemod/scripting/
+        pushd temp/addons/sourcemod/scripting/
+          chmod +x spcomp
+          ./compile.sh deathmatch.sp
+        popd
+        find . > artifacts/dir.txt
+
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifacts
+        path: |
+          artifacts/*
