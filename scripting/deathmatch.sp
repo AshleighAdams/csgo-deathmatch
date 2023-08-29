@@ -1833,7 +1833,7 @@ public Action OnTraceAttack(int victim, int &attacker, int &inflictor, float &da
             return Plugin_Handled;
     }
 
-    if (g_cvDM_headshot_only.BoolValue || (g_bHSOnlyClient[attacker] && g_cvDM_headshot_only_allow_client.BoolValue))
+    if (g_cvDM_headshot_only.BoolValue || (IsValidClient(attacker) && g_bHSOnlyClient[attacker] && g_cvDM_headshot_only_allow_client.BoolValue))
     {
         char weapon[32];
         char grenade[32];
@@ -1873,7 +1873,7 @@ public Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
         }
     }
 
-    if (g_cvDM_headshot_only.BoolValue || (g_bHSOnlyClient[attacker] && g_cvDM_headshot_only_allow_client.BoolValue))
+    if (g_cvDM_headshot_only.BoolValue || (IsValidClient(attacker) && g_bHSOnlyClient[attacker] && g_cvDM_headshot_only_allow_client.BoolValue))
     {
         char grenade[32];
         char weapon[32];
